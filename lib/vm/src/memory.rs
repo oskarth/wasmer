@@ -235,15 +235,21 @@ impl VMOwnedMemory {
             }
         }
 
-        let offset_guard_bytes = style.offset_guard_size() as usize;
+        // YOLO
+        // let offset_guard_bytes = style.offset_guard_size() as usize;
 
-        let minimum_pages = match style {
-            MemoryStyle::Dynamic { .. } => memory.minimum,
-            MemoryStyle::Static { bound, .. } => {
-                assert_ge!(*bound, memory.minimum);
-                *bound
-            }
-        };
+        // let minimum_pages = match style {
+        //     MemoryStyle::Dynamic { .. } => memory.minimum,
+        //     MemoryStyle::Static { bound, .. } => {
+        //         assert_ge!(*bound, memory.minimum);
+        //         *bound
+        //     }
+        // };
+
+        // Hack to work around memory limits
+        let minimum_pages = memory.minimum;
+        let offset_guard_bytes = Pages(1).bytes().0;
+
         let minimum_bytes = minimum_pages.bytes().0;
         let request_bytes = minimum_bytes.checked_add(offset_guard_bytes).unwrap();
         let mapped_pages = memory.minimum;
